@@ -1,7 +1,7 @@
 package service
 import (
 	// "fmt"
-	"go_code/CustomerManagement/customer"
+	"go_code/shangguigu/CustomerManagement/customer"
 )
 type CustomerService struct {
 	customers []customer.Customer
@@ -33,21 +33,39 @@ func(this *CustomerService) Add(customer customer.Customer) bool {
 	return true
 }
 
+//修改客户数据
+func(this *CustomerService) Update(id int,customerInfo customer.Customer) bool {
+
+	index,_ := this.FindById(id)
+	if index == -1 {
+		return false
+	}
+
+	this.customers[index].Name = customerInfo.Name
+	this.customers[index].Gender = customerInfo.Gender
+	this.customers[index].Age = customerInfo.Age
+	this.customers[index].Phone = customerInfo.Phone
+	this.customers[index].Email = customerInfo.Email
+	return true
+}
+
 //根据id查找客户数据
-func(this *CustomerService) FindById(id int) int {
+func(this *CustomerService) FindById(id int) (int,customer.Customer) {
 	index := -1
+	var customer customer.Customer
 	for i := 0;i < len(this.customers);i ++ {
 		if this.customers[i].Id == id {
 			index = i
+			customer = this.customers[i]
 			break
 		}
 	}
-	return index
+	return index,customer
 }
 
 //根据id删除客户数据
 func(this *CustomerService) Del(id int) bool {
-	index := this.FindById(id)
+	index,_ := this.FindById(id)
 	if index == -1 {
 		return false
 	}else{

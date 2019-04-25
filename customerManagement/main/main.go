@@ -1,8 +1,8 @@
 package main
 import (
 	"fmt"
-	"go_code/CustomerManagement/service"
-	"go_code/CustomerManagement/customer"
+	"go_code/shangguigu/CustomerManagement/service"
+	"go_code/shangguigu/CustomerManagement/customer"
 )
 
 type customerView struct {
@@ -61,11 +61,70 @@ func (this *customerView) add() {
 	}
 }
 
+//修改客户
+func (this *customerView) update() {
+	fmt.Println("\n\n---------------------------修改客户信息----------------------------")
+	fmt.Print("请输入待修改的用户编号(-1:退出)")
+	id := -1
+	fmt.Scanln(&id)
+	if id == -1 {
+		return
+	}
+
+	index,customerInfo := this.customerService.FindById(id)
+	if index == -1 {
+		fmt.Print("\n该用户不存在")
+		return
+	}
+	fmt.Printf("姓名(%v) :",customerInfo.Name)
+	name := ""
+	fmt.Scanln(&name)
+	if name != ""{
+		customerInfo.Name = name
+	}
+
+	fmt.Printf("性别(%v) :",customerInfo.Gender)
+	gender := ""
+	fmt.Scanln(&gender)
+	if gender != ""{
+		customerInfo.Gender = gender
+	}
+
+	fmt.Printf("年龄(%v) :",customerInfo.Age)
+	var age int = -1
+	fmt.Scanln(&age)
+	if age != -1 {
+		customerInfo.Age = age
+	}
+
+	fmt.Printf("电话(%v) :",customerInfo.Phone)
+	phone := ""
+	fmt.Scanln(&phone)
+	if phone != "" {
+		customerInfo.Phone = phone
+	}
+
+	fmt.Printf("邮箱(%v) :",customerInfo.Email)
+	email := ""
+	fmt.Scanln(&email)
+	if email != "" {
+		customerInfo.Email = email
+	}
+
+	result := this.customerService.Update(id,customerInfo)
+	if result {
+		fmt.Println("\n\n修改客户成功")
+	}else{
+		fmt.Println("\n\n修改客户失败")
+	}
+}
+
+
 //删除客户
 func (this *customerView) del() {
 
 	fmt.Println("\n\n---------------------------删除客户----------------------------")
-	fmt.Println("请输入待输出的用户编号(-1:退出)")
+	fmt.Println("请输入待删除的用户编号(-1:退出)")
 	id := -1
 	fmt.Scanln(&id)
 	if id == -1 {
@@ -76,7 +135,7 @@ func (this *customerView) del() {
 	choice := ""
 	for{
 		fmt.Scanln(&choice)
-		if choice == "y" || choice == "n" {
+		if choice == "y" || choice == "n" || choice == "Y" || choice == "N" {
 			break
 		}
 		fmt.Println("输入有误! 请输入y/n...")
@@ -99,6 +158,25 @@ func (this *customerView) del() {
 	
 }
 
+//退出系统
+func (this *customerView) exit() {
+	fmt.Println("\n\n确认是否退出 y|n")
+	choice := ""
+	for{
+		fmt.Scanln(&choice)
+		if choice == "y" || choice == "n" || choice == "Y" || choice == "N" {
+			break
+		}
+		fmt.Println("输入有误! 请输入y/n...")
+	}
+
+	if choice == "n" || choice == "N"{
+		return
+	}
+	
+	this.loop = false
+}
+
 func (this *customerView) mainMenu(){
 	for{
 
@@ -116,13 +194,13 @@ func (this *customerView) mainMenu(){
 			case "1":
 				this.add()
 			case "2":	
-				fmt.Println("\n修改客户...")
+				this.update()
 			case "3":
 				this.del()
 			case "4":	
 				this.list()
 			case "5":	
-				this.loop = false
+				this.exit()
 			default :
 				fmt.Println("请输入正确的选项...")
 		 }
