@@ -27,5 +27,10 @@ func TestResultFunc(t *testing.T) {
 	fmt.Printf("ftype %v\n",elem.Elem().Kind().String())
 
 	model = elem.Interface().(*User) //model是*user 它的指向和elem是一样的
+	elem = elem.Elem()
+	elem.FieldByName("UserID").SetString("123456")
+	elem.FieldByName("Name").SetString("tom")
+	fmt.Printf("elem %v UserID %v Name %v\n",model,model.UserID,model.Name)
+
 	
 }
